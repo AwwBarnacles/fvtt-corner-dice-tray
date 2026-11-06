@@ -13,10 +13,10 @@
 		}
 	],
 	"url": "https://github.com/AwwBarnacles/fvtt-corner-dice-tray",
-	"version": "4.0.6-corner",
+	"version": "2.2.6-corner",
 	"compatibility": {
-		"minimum": "14",
-		"verified": "14"
+		"minimum": "12",
+		"verified": "12"
 	},
 	"esmodules": ["module/dice-calculator.js"],
 	"styles": ["styles/dice-calculator.css"],
@@ -29,7 +29,7 @@
 		},
 		{
 			"lang": "pt-BR",
-			"name": "Português (Brasil)",
+			"name": "English",
 			"path": "lang/pt-BR.json"
 		},
 		{
@@ -56,11 +56,6 @@
 			"lang": "pl",
 			"name": "Polski",
 			"path": "lang/pl.json"
-		},
-		{
-			"lang": "cs",
-			"name": "Čeština",
-			"path": "lang/cs.json"
 		}
 	],
 	"manifest": "https://github.com/AwwBarnacles/fvtt-corner-dice-tray/releases/latest/download/module.json",

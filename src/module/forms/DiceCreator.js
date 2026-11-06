@@ -1,89 +1,51 @@
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-
-export class DiceCreator extends HandlebarsApplicationMixin(ApplicationV2) {
+export class DiceCreator extends FormApplication {
 	constructor(object, options = {}) {
-		super(options);
-		this.object = object;
+		super(object, options);
+		Hooks.once("closeDiceRowSettings", () => this.close());
 	}
 
-	static DEFAULT_OPTIONS = {
-		id: "dice-creator-form",
-		form: {
-			handler: DiceCreator.#onSubmit,
+	static get defaultOptions() {
+		return foundry.utils.mergeObject(super.defaultOptions, {
+			id: "dice-creator-form",
+			title: "DICE_TRAY.SETTINGS.DiceCreator",
+			template: "./modules/dice-calculator/templates/DiceCreator.hbs",
+			classes: ["sheet", "dice-tray-dice-creator"],
+			width: 400,
 			closeOnSubmit: true,
-		},
-		position: {
-			width: 450,
-			height: "auto",
-		},
-		tag: "form",
-		window: {
-			icon: "fas fa-dice",
-			contentClasses: ["standard-form", "dice-tray-dice-creator"],
-			title: "DICE_TRAY.SETTINGS.DiceCreator"
-		}
-	};
+		});
+	}
 
-	static PARTS = {
-		diceCreator: {
-			template: "./modules/dice-calculator/templates/DiceCreator.hbs"
-		},
-		footer: { template: "templates/generic/form-footer.hbs" }
-	};
-
-	_prepareContext(options) {
-		const { dice, insideDrawer, maxRows, row, settings } = this.object;
-		const label = dice?.key ? "SETTINGS.Save" : "DICE_TRAY.DiceCreator.CreateDice";
+	getData(options) {
+		const nextRow = this.object.diceRows.findIndex((row) => Object.keys(row).length < 7);
 		return {
-			dice,
-			insideDrawer,
-			row: row !== undefined ? row + 1 : maxRows ?? null,
-			maxRows,
-			settings,
-			buttons: [
-				{ type: "submit", icon: "fa-solid fa-save", label },
-			]
+			dice: this.object.dice,
+			diceRows: this.object.diceRows, // this.diceRows,
+			nextRow: nextRow < 0 ? this.object.diceRows.length : nextRow,
+			maxRows: Math.max(nextRow + 1, this.object.diceRows.length),
 		};
 	}
 
-	#cleanDiceData(dice) {
-		const clean = Object.fromEntries(
-			Object.entries(dice).filter(([k, v]) => k !== "key" && v !== "")
-		);
-		if (!clean.img) {
-			clean.label ??= dice.key;
-			if (clean.alternative) clean.alternative = false;
+	async activateListeners(html) {
+		super.activateListeners(html);
+		html.find("button[name=cancel]").on("click", async (event) => {
+			this.close();
+		});
+	}
+
+	async _updateObject(event, formData) {
+		const { dice, row } = foundry.utils.expandObject(formData);
+		if (this.object.dice && dice.row !== row) {
+			const key = this.object.dice.originalKey;
+			delete this.object.form.diceRows[row][key];
 		}
-		return clean;
-	}
-
-	#submitRow(dice, row) {
-		const { insideDrawer, originalKey: origKey, row: origRow } = this.object;
-		const cleanKey = this.#cleanDiceData(dice);
-		if (row > this.parent.diceRows.length - 1) this.parent.diceRows.push({});
-		let target = this.parent.diceRows[row];
-
-		if (dice.drawer) cleanKey.drawer = target[origKey].drawer;
-
-		if (insideDrawer) target[insideDrawer].drawer[dice.key] = cleanKey;
-		else target[dice.key] = cleanKey;
-
-		if (origRow !== row) delete this.parent.diceRows[origRow]?.[origKey];
-	}
-
-	static #onSubmit(event, form, formData) {
-		let { dice, row } = foundry.utils.expandObject(formData.object);
-		if (row !== undefined) {
-			// Account for row being 1-index for better UX
-			row--;
-			this.#submitRow(dice, row );
-		} else {
-			this.parent.dice[dice.key] = this.#cleanDiceData(dice);
+		if (row + 1 > this.object.form.diceRows.length) {
+			this.object.form.diceRows.push({});
 		}
-	}
-
-	async close(options={}) {
-		if (options.submitted) this.parent.render({ force: true });
-		await super.close(options);
+		const cleanKey = Object.fromEntries(Object.entries(dice).filter(([k, v]) => k !== "key" && v !== ""));
+		if (!cleanKey.img && !cleanKey.label) {
+			cleanKey.label = dice.key;
+		}
+		this.object.form.diceRows[row][dice.key] = cleanKey;
+		this.object.form.render(true);
 	}
 }

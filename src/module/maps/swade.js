@@ -3,9 +3,17 @@ import GenericDiceMap from "./templates/template.js";
 export default class SWADEDiceMap extends GenericDiceMap {
 	removeAdvOnRoll = false;
 
-	get rows() {
-		const { d4, d6, d8, d10, d12 } = this.dice;
-		return [{ d4, d6, d8, d10, d12 }];
+	get dice() {
+		const dice = [
+			{
+				d4: { img: "icons/dice/d4black.svg" },
+				d6: { img: "icons/dice/d6black.svg" },
+				d8: { img: "icons/dice/d8black.svg" },
+				d10: { img: "icons/dice/d10black.svg" },
+				d12: { img: "icons/dice/d12black.svg" }
+			}
+		];
+		return dice;
 	}
 
 	get labels() {
@@ -29,25 +37,31 @@ export default class SWADEDiceMap extends GenericDiceMap {
 	}
 
 	_extraButtonsLogic(html) {
-		const advantage = html.querySelector(".dice-tray__advantage");
-		const disadvantage = html.querySelector(".dice-tray__disadvantage");
-		advantage.addEventListener("click", (event) => {
+		html.find(".dice-tray__advantage").on("click", (event) => {
 			event.preventDefault();
-			advantage.classList.toggle("active");
-			disadvantage.classList.toggle("active", advantage.classList.contains("active"));
+			if (!html.find(".dice-tray__advantage").hasClass("active")) {
+				html.find(".dice-tray__advantage").addClass("active");
+				html.find(".dice-tray__disadvantage").addClass("active");
+			} else {
+				html.find(".dice-tray__advantage").removeClass("active");
+			}
 		});
-		disadvantage.addEventListener("click", (event) => {
+		html.find(".dice-tray__disadvantage").on("click", (event) => {
 			event.preventDefault();
-			disadvantage.classList.toggle("active");
-			if (!disadvantage.classList.contains("active")) advantage.classList.remove("active");
+			if (!html.find(".dice-tray__disadvantage").hasClass("active")) {
+				html.find(".dice-tray__disadvantage").addClass("active");
+			} else {
+				html.find(".dice-tray__disadvantage").removeClass("active");
+				html.find(".dice-tray__advantage").removeClass("active");
+			}
 		});
 	}
 
 	rawFormula(qty, dice, html) {
 		let roll_suffix = "";
-		let add_wild = html.querySelector(".dice-tray__advantage").classList.contains("active");
+		let add_wild = html.find(".dice-tray__advantage").hasClass("active");
 
-		if (html.querySelector(".dice-tray__disadvantage").classList.contains("active")) {
+		if (html.find(".dice-tray__disadvantage").hasClass("active")) {
 			roll_suffix = "x=";
 		}
 
@@ -58,7 +72,7 @@ export default class SWADEDiceMap extends GenericDiceMap {
 
 			dice = dice.replace("(", "").replace(")", "");
 			if (!Number.isNumeric(qty)) {
-				return `{1(${dice})${roll_suffix}.*,1d6${roll_suffix}}kh(?<qty>\\d*)`;
+				return `{1(?<dice>${dice})${roll_suffix}.*,1d6${roll_suffix}}kh(?<qty>\\d*)`;
 			}
 			return `{${`1${dice}${roll_suffix},`.repeat(qty)}1d6${roll_suffix}}kh${qty}`;
 		}

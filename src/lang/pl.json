@@ -20,9 +20,10 @@
 		"MinusOneDieLong": "Zmniejsz rozmiar kości",
 		"KeepHighest": "Zachowaj większy wynik",
 		"KeepLowest": "Zachowaj mniejszy wynik",
-		"Roll": "Rzut",
+		"del": "usuń",
+		"clear": "wyczyść",
 
-		"Optional": "Opcjonalnie",
+		"Calculator": "Kalkulator",
 
 		"DiceCreator": {
 			"CreateDice": "Utwórz kość",
@@ -39,37 +40,21 @@
 			},
 			"Label": {
 				"name": "Etykieta",
-				"hint": "Etykieta wyświetlana w przypadku, gdy kostka nie ma obrazu."
+				"hint": "(Opcjonalnie) Etykieta wyświetlana w przypadku, gdy kostka nie ma obrazu."
 			},
 			"Tooltip": {
 				"name": "Podpowiedź",
-				"hint": "Podpowiedź wyświetlana po najechaniu kursorem na przycisk. Domyślnie jest to Formuła."
+				"hint": "(Opcjonalnie) Podpowiedź wyświetlana po najechaniu kursorem na przycisk. Domyślnie jest to Formuła."
 			},
 			"Color": {
 				"name": "Kolor",
-				"hint": "Kolor wypełniający obraz."
-			},
-			"Alternative": {
-				"name": "Alternatywny tryb wyświetlania",
-				"hint": "Wybierz tę opcję, jeśli obraz się nie ładuje."
+				"hint": "(Opcjonalnie) Kolor wypełniający obraz. Domyślnie biały."
 			}
 		},
 
 		"DiceRows": {
-			"compactMode": {
-				"label": "Tryb kompaktowy",
-				"hint": "Wyłącza dodatkowe rzędy kości i łączy dwa oryginalne rzędy."
-			},
-			"hideNumberInput": {
-				"label": "Ukryj wprowadzanie liczb"
-			},
-			"hideNumberButtons": {
-				"label": "Ukryj przyciski +/-"
-			},
-			"hideRollButton": {
-				"label": "Ukryj przycisk rzutu"
-			},
-			"Instruction1": "Kliknij dowolny przycisk kości, aby go edytować. Kliknij prawym przyciskiem myszy dowolny przycisk kości, aby go usunąć."
+			"Instruction1": "Kliknij dowolny przycisk kostki, aby go edytować.",
+			"Instruction2": "Kliknij prawym przyciskiem myszy dowolny przycisk kostki, aby go usunąć."
 		},
 
 		"KEYBINGINDS": {
@@ -79,40 +64,28 @@
 		},
 
 		"SETTINGS": {
+			"DiceCalculatorSettings": "Konfiguracja kalkulatora kości",
 			"DiceCreator": "Kreator kości",
 			"DiceRowSettings": "Konfiguracja wierszy kości",
+			"GeneralSettings": "Ogólne stawienia",
+			"General": "Ogólne",
 			"autoOpenPopout": {
 				"name": "Automatyczne otwieranie wyskakującego okienka",
 				"hint": "Automatycznie otwiera wyskakujące okienko Dice Tray po załadowaniu strony."
 			},
 			"enableDiceTray": {
 				"name": "Włącz Dice Tray",
-				"hint": "Włącz wyświetlanie tacki na kości pod obszarem wiadomości czatu. Jest to ustawienie użytkownika dla graczy, którzy nie chcą tej tacki."
+				"hint": "Włącz wyświetlanie Dice Tray poniżej obszaru wiadomości czatu."
 			},
-			"hideAdv": {
-				"name": "Ukryj dodatkowe przyciski",
-				"hint": "Ukrywa przyciski Szczęścia/Nieszczęścia."
+			"enableDiceCalculator": {
+				"name": "Włącz kalkulator kości",
+				"hint": "Włączenie wyświetlania okna dialogowego kalkulatora kości po kliknięciu ikony d20 w pobliżu okna czatu."
 			},
 			"popout": {
-				"name": "Przycisk wysuwania Dice Tray",
+				"name": "Dodaj przycisk do wyskakującego okna Dice Tray",
 				"hint": "Dodaje przycisk na pasku kontrolnym do włączania wyskakującego okienka Dice Tray. Można również przełączać wyskakujące okienko, ustawiając powiązanie klawiszy.",
 				"options": {
 					"all": "Wszystkie elementy sterujące"
-				}
-			},
-			"rightClickCommand": {
-				"name": "Polecenie prawego przycisku myszy",
-				"hint": "Ustawia zachowanie przycisku rzutu kością po kliknięciu prawym przyciskiem myszy.",
-				"options": {
-					"decrease": "Domyślne (zmniejsz liczbę kości)",
-					"roll": "Rzuć jedną kostką"
-				}
-			},
-			"PF2E": {
-				"flatCheckLabel": "{dc} {text}",
-				"flatCheck": {
-					"name": "Dodaj przyciski płaskiego testu",
-					"hint": "Zastępuje przyciski „Szczęście/Pech” przyciskami „ST 5/11 Płaski Test”."
 				}
 			},
 			"SWADE": {

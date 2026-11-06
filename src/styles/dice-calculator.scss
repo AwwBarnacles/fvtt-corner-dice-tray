@@ -1,306 +1,294 @@
-@import "mixins";
-@import "popout";
-@import "grimwild";
+@import "dice-tray";
 
-#ui-right {
-	.dice-tray {
-		pointer-events: all;
-	}
-}
+$border-color_5: #8c2da5;
 
-#ui-right {
-	.dice-tray {
-		margin-top: 2px;
-	}
-}
-
-#chat-popout,
-#sidebar-content {
-	.dice-tray {
-		margin-top: -6px;
-	}
-}
-
-.dice-tray {
-	.dice-tray__stacked {
-		height: 30px;
-
-		&.flexcol > * {
-			flex: 1;
-		}
-
-		button {
-			min-height: initial;
-			font-size: 10px;
-			line-height: 1;
-			text-transform: uppercase;
-
-			&:first-child {
-				border-radius: $border-radius $border-radius 0 0;
-			}
-			&:last-child {
-				border-radius: 0 0 $border-radius $border-radius;
-			}
-		}
-
-	}
-	.dice-tray__drawer button,
-	.dice-tray__buttons,
-	.dice-tray__math,
-	.dice-tray__input {
-		height: 30px;
-	}
-	.dice-tray__buttons {
-		> .dice-tray__button:first-child {
-			border-radius: $border-radius 0 0 $border-radius;
-		}
-		.dice-tray__button,
-		#dice-tray-math button {
-			border-radius: 0;
-		}
-		> .dice-tray__button:last-child,
-		.dice-tray__roll {
-			border-radius: 0 $border-radius $border-radius 0;
-		}
-	}
-	.dice-tray__math {
-		#dice-tray-math {
-			margin: 0 0 0 .2rem;
-		}
-	}
-	.dice-tray__math__buttons {
-		margin-top: 2px;
-	}
-	.dice-tray__input {
-		border-radius: 0;
-	}
-	.flexrow {
-		flex-wrap: nowrap;
-	}
-	.dice-tray__drawer {
-		position: fixed;
-		// The anchor-position is set in JS when listeners are applied
-		bottom: anchor(top);
-		left: anchor(left);
-		width: anchor-size(width);
-		max-height: unset;
-
-		&.flexcol {
-			flex-direction: column-reverse;
-		}
-		button {
-			transition: none;
-			.dice-tray__flag {
-				@extend %drawer-flag-style
-			}
-			&:last-child {
-				border-radius: $border-radius $border-radius 0 0;
-			}
-			&:not(:hover) {
-				border: 1px solid #888;
-				border-bottom: none;
-				padding-bottom: 1px;
-				&:not(:last-child) {
-					border-top: none;
-					padding-top: 1px;
-				}
-			}
-		}
-	}
-	button {
-		@extend %dice-tray-style;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-		height: inherit;
-		min-height: 1rem;
-		&:focus {
-			outline: none;
-		}
-		&:hover {
-			color: $orange;
-			div.dice {
-				background-color: var(--color-light-1);
-			}
-		}
-		svg {
-			width: 100%;
-			height: auto;
-			transition: all ease-in-out 0.25s;
-			* {
-				fill: $white;
-			}
-		}
-		img {
-			border: none;
-		}
-		div.dice {
-			height: 100%;
-			aspect-ratio: 1/1;
-			background-color: var(--color-light-2);
-		}
-		.dice-tray__flag {
-			position: absolute;
-			bottom: calc(100% - 2px);
-			left: 0;
-			right: 0;
-			font-size: 14px;
-			height: 18px;
-			line-height: 1;
-			background-color: $orange;
-			color: $white;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: $border-radius $border-radius 0 0;
-			max-height: 18px;
-			transition: all ease-in-out 0.15s;
+#chat-controls {
+	.chat-control-icon {
+		i.dice-calculator-toggle {
 			&:hover {
-				background-color: $orange;
-				color: $white;
+				color: #ff9898;
+			}
+		}
+	}
+}
+.dialog--dice-calculator {
+	.dice-calculator {
+		>button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			border-radius: 2px;
+			font-weight: bold;
+			font-size: 18px;
+			height: 32px;
+			line-height: 1;
+			&:hover {
+				box-shadow: 0 0 5px rgba(255, 0, 0, 0.35);
+			}
+		}
+		.dice-calculator--button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			border-radius: 2px;
+			font-weight: bold;
+			font-size: 18px;
+			height: 32px;
+			line-height: 1;
+			flex: 0 0 auto;
+			width: calc(100% * (1/3) - 4px);
+
+			&:hover {
+				box-shadow: 0 0 5px rgba(255, 0, 0, 0.35);
 			}
 			&:focus {
-				background-color: $orange;
-				color: $white;
-			}
-			&.hide {
-				max-height: 0;
+				outline: none;
+				box-shadow: none;
 			}
 		}
-		&.dice-tray__button {
-			div.dice + span.dice-label {
-				padding-right: 0.25rem;
-			}
-			&:has(+ .dice-tray__drawer:not([hidden])) {
-				.dice-tray__flag {
-					@extend %drawer-flag-style
-				}
+		.operation-row {
+			.dice-calculator--button {
+				width: 100%
 			}
 		}
-		&.dice-tray__roll {
+		.dice-calculator--light {
+			background-color: rgba(0, 0, 0, 0.15);
+		}
+		.dice-calculator--dark {
+			background-color: rgba(0, 0, 0, 0.3);
+			border-color: #7d7d7d;
+		}
+		.dice-calculator--op {
+			background-color: rgba(226, 0, 0, 0.5);
+			border-color: #c84646;
+		}
+		.dice-calculator--math {
+			background-color: rgba(255, 177, 0, 0.5);
+			border-color: #c88c00;
+		}
+		.dice-calculator--confirm {
+			background-color: rgba(0, 160, 175, 0.5);
+			border-color: #048790;
+		}
+		.dice-calculator__input {
+			grid-column-start: 1;
+			grid-column-end: span 4;
+			grid-row-start: 1;
+			grid-row-end: span 2;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-items: center;
+			margin-bottom: 1rem;
+			>label {
+				font-size: 20px;
+				padding-right: 12px;
+			}
+		}
+		.dice-calculator__input-wrapper {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-items: center;
+			flex-grow: 1;
+			position: relative;
+			text-align: right;
+			>textarea {
+				font-size: 18px;
+				width: auto;
+				min-height: 80px;
+				flex-grow: 1;
+				resize: none;
+			}
+		}
+		.dice-calculator__rolls--hidden {
+			position: absolute;
+			background: #ffffff;
+			width: 100%;
+			left: 0;
+			right: 0;
+			top: 100%;
+			z-index: 10;
+			display: none;
+		}
+		.dice-calculator__rolls--hidden.visible {
+			display: block;
+		}
+		.dice-calculator__roll {
+			padding: 4px 8px;
+			color: #999;
+			border: 1px solid #999;
+			border-top: 0;
+			position: relative;
+			z-index: 12;
 			&:hover {
-				@include hover-style($orange);
+				background-color: #333;
+				color: #fff;
 			}
 		}
-		&.dice-tray__math--sub {
-			border-radius: 6px 0 0 6px;
-
-			&:hover {
-				@include hover-style($orange);
+		.dice-calculator__d100 {
+			grid-column-start: 1;
+			grid-row-start: 3;
+		}
+		.dice-calculator__dx {
+			grid-column-start: 2;
+			grid-row-start: 3;
+		}
+		.dice-calculator__del {
+			grid-column-start: 3;
+			grid-row-start: 3;
+		}
+		.dice-calculator__ac {
+			grid-column-start: 4;
+			grid-row-start: 3;
+		}
+		.dice-calculator__d4 {
+			grid-column-start: 1;
+			grid-row-start: 4;
+		}
+		.dice-calculator__d6 {
+			grid-column-start: 2;
+			grid-row-start: 4;
+		}
+		.dice-calculator__d8 {
+			grid-column-start: 3;
+			grid-row-start: 4;
+		}
+		.dice-calculator__div {
+			grid-column-start: 4;
+			grid-row-start: 4;
+		}
+		.dice-calculator__d10 {
+			grid-column-start: 1;
+			grid-row-start: 5;
+		}
+		.dice-calculator__d12 {
+			grid-column-start: 2;
+			grid-row-start: 5;
+		}
+		.dice-calculator__d20 {
+			grid-column-start: 3;
+			grid-row-start: 5;
+		}
+		.dice-calculator__mul {
+			grid-column-start: 4;
+			grid-row-start: 5;
+		}
+		.dice-calculator__7 {
+			grid-column-start: 1;
+			grid-row-start: 6;
+		}
+		.dice-calculator__8 {
+			grid-column-start: 2;
+			grid-row-start: 6;
+		}
+		.dice-calculator__9 {
+			grid-column-start: 3;
+			grid-row-start: 6;
+		}
+		.dice-calculator__min {
+			grid-column-start: 4;
+			grid-row-start: 6;
+		}
+		.dice-calculator__4 {
+			grid-column-start: 1;
+			grid-row-start: 7;
+		}
+		.dice-calculator__5 {
+			grid-column-start: 2;
+			grid-row-start: 7;
+		}
+		.dice-calculator__6 {
+			grid-column-start: 3;
+			grid-row-start: 7;
+		}
+		.dice-calculator__plu {
+			grid-column-start: 4;
+			grid-row-start: 7;
+		}
+		.dice-calculator__1 {
+			grid-column-start: 1;
+			grid-row-start: 8;
+		}
+		.dice-calculator__2 {
+			grid-column-start: 2;
+			grid-row-start: 8;
+		}
+		.dice-calculator__3 {
+			grid-column-start: 3;
+			grid-row-start: 8;
+		}
+		.dice-calculator__kh {
+			grid-column-start: 4;
+			grid-row-start: 8;
+		}
+		.dice-calculator__0 {
+			grid-column-start: 1;
+			grid-row-start: 9;
+		}
+		.dice-calculator__p-left {
+			grid-column-start: 2;
+			grid-row-start: 9;
+		}
+		.dice-calculator__p-right {
+			grid-column-start: 3;
+			grid-row-start: 9;
+		}
+		.dice-calculator__kl {
+			grid-column-start: 4;
+			grid-row-start: 9;
+		}
+		.dice-calculator__actor {
+			grid-column-start: 1;
+			grid-column-end: span 4;
+			grid-row-start: 10;
+			.dice-calculator--button {
+				width: auto;
+				flex-grow: 1;
+				height: 32px;
+				padding: 4px 8px;
+				margin: 2px;
+				white-space: nowrap;
 			}
 		}
-		&.dice-tray__math--add {
-			border-radius: 0 $border-radius $border-radius 0;
-
-			&:hover {
-				background: $green;
-				border-color: $green;
-				color: $white;
+		.dice-calculator__btn-group {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			padding: 4px 0;
+			border-top: 1px solid rgba(0, 0, 0, 0.5);
+			&:first-child {
+				margin-top: 2px;
+			}
+			&:last-child {
+				padding-bottom: 0;
+			}
+			.dice-calculator--button {
+				min-width: 20%;
 			}
 		}
-		&.dice-tray__advantage {
-			&:hover {
-				@include hover-style($green, true);
-			}
-			&.active {
-				@include active-style($green);
-			}
-		}
-		&.dice-tray__disadvantage {
-			&:hover {
-				@include hover-style($orange, true);
-			}
-			&.active {
-				@include active-style($orange);
+		.dice-calculator__abil {
+			.dice-calculator--button {
+				min-width: 0;
 			}
 		}
 	}
-	input[type="text"] {
-		@extend %dice-tray-style;
-		display: block;
-		color: $white;
-		text-align: center;
+	.dice-calculator--roll {
+		background-color: rgba(76, 177, 0, 0.5);
+		border-color: #429600;
+		font-weight: bold;
+		font-size: 18px;
+		line-height: 1;
+		text-transform: uppercase;
 		&:focus {
-			background: var(--color-cool-5);
-			border-color: $orange;
 			outline: none;
+			box-shadow: none;
 		}
 	}
-}
-.dice-tray-row-settings {
-	.form-group {
-		> label {
-			flex: 2;
-		}
-	}
-	.sidebar-preview {
-		width: var(--sidebar-width);
-		margin: auto;
-
-		&.dice-rows {
-			justify-content: flex-end;
-			height: 75px;
-		}
-
-		.dice-tray {
-			&.dice-tray__pool {
-				.dice-tray__buttons {
-					height: unset;
-					min-height: 30px;
-					button {
-						height: 30px;
-						flex: 0 0 calc(100% / 7);
-					}
-					&.flexrow {
-						flex-wrap: wrap;
-					}
-				}
-			}
-		}
-	}
-}
-
-body {
-	&.theme-dark {
-		&:not(:has(#interface.theme-light)) {
-			.dice-tray-row-settings {
-				.sidebar-preview {
-					.dice-tray {
-						button,
-						input {
-							&:not(:hover) {
-								border-color: #888;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	&:has(#interface.theme-light) {
-		.application {
-			@include dice-tray-theme;
-		}
-	}
-}
-
-#interface {
-	&.theme-light {
-		@include dice-tray-theme;
-	}
-}
-
-.dice-tray.dice-tray--corner {
-	position: fixed;
-	bottom: 10px;
-	right: 10px;
-	margin: 0;
-	z-index: var(--z-index-ui, 30);
-	pointer-events: all;
-}
-
-.dice-tray.dice-tray--hidden {
-	display: none;
 }

@@ -4,122 +4,144 @@ export default class HeXXen1733DiceMap extends GenericDiceMap {
 	showExtraButtons = false;
 
 	get dice() {
-		return {
-			h: {
-				tooltip: "HeXXenwürfel",
-				img: "systems/hexxen-1733/img/dice/svg/erfolgswuerfel_einfach.svg",
-				color: "#00a806"
-			},
-			s: {
-				tooltip: "Segnungswürfel",
-				img: "systems/hexxen-1733/img/dice/svg/erfolgswuerfel_doppel.svg",
-				color: "#d1c5a8"
-			},
-			b: {
-				tooltip: "Blutwürfel",
-				img: "systems/hexxen-1733/img/dice/svg/blutwuerfel_3.svg",
-				color: "#a74937"
-			},
-			e: {
-				tooltip: "Elixierwürfel",
-				img: "systems/hexxen-1733/img/dice/svg/elixirwuerfel_5.svg",
-				color: "#4c7ba0"
-			},
-			...super.dice
-		};
-	}
-
-	get rows() {
-		const { h, s, b, e } = this.dice;
-		return [{ h, s, b, e }];
+		return [
+			{
+				h: {
+					tooltip: "HeXXenwürfel",
+					img: "systems/hexxen-1733/img/dice/svg/erfolgswuerfel_einfach.svg",
+					color: "#00a806"
+				},
+				s: {
+					tooltip: "Segnungswürfel",
+					img: "systems/hexxen-1733/img/dice/svg/erfolgswuerfel_doppel.svg",
+					color: "#d1c5a8"
+				},
+				b: {
+					tooltip: "Blutwürfel",
+					img: "systems/hexxen-1733/img/dice/svg/blutwuerfel_3.svg",
+					color: "#a74937"
+				},
+				e: {
+					tooltip: "Elixierwürfel",
+					img: "systems/hexxen-1733/img/dice/svg/elixirwuerfel_5.svg",
+					color: "#4c7ba0"
+				}
+			}
+		];
 	}
 
 	applyModifier(html) {
-		const modInput = html.querySelector(".dice-tray__input");
-		if (!modInput) return;
-		const modVal = Number(modInput.value);
+		const $mod_input = html.find(".dice-tray__input");
+		const mod_val = Number($mod_input.val());
 
-		if (modInput.length === 0 || isNaN(modVal)) return;
+		if ($mod_input.length === 0 || isNaN(mod_val)) return;
 
-		let modString = "";
-		let modTemp = "";
-		if (modVal > 0) {
-			modString = `${modVal}+`;
-		} else if (modVal < 0) {
-			modTemp = Math.abs(modVal);
-			modString = `${modTemp}-`;
+		let mod_string = "";
+		let mod_temp = "";
+		if (mod_val > 0) {
+			mod_string = `${mod_val}+`;
+		} else if (mod_val < 0) {
+			mod_temp = Math.abs(mod_val);
+			mod_string = `${mod_temp}-`;
 		}
 
-		const chat = this.textarea;
-		const chatVal = String(chat.value);
+		const $chat = html.find("#chat-form textarea");
+		const chat_val = String($chat.val());
 
-		const matchString = /(\d+)(\+|-)$/;
-		if (matchString.test(chatVal)) {
-			chat.value = chatVal.replace(matchString, modString);
-		} else if (chatVal !== "") {
-			chat.value = chatVal + modString;
+		const match_string = /(\d+)(\+|-)$/;
+		if (match_string.test(chat_val)) {
+			$chat.val(chat_val.replace(match_string, mod_string));
+		} else if (chat_val !== "") {
+			$chat.val(chat_val + mod_string);
 		} else {
-			const rollPrefix = this._getMessageMode();
-			chat.value = `${rollPrefix} ${modString}`;
+			const rollPrefix = this._getRollMode(html);
+			$chat.val(`${rollPrefix} ${mod_string}`);
 		}
-
-		if (/(\/r|\/gmr|\/br|\/sr) $/g.test(chat.value)) {
-			chat.value = "";
+		if (/(\/r|\/gmr|\/br|\/sr) $/g.test($chat.val())) {
+			$chat.val("");
 		}
 	}
 
 	updateChatDice(dataset, direction, html) {
-		const chat = this.textarea;
-		let currFormula = String(chat.value);
-
-		if (direction === "sub" && currFormula === "") {
-			this.reset();
-			return;
-		}
-
-		const rollPrefix = this._getMessageMode();
-		let qty = 1;
+		const $chat = html.find("#chat-form textarea");
+		let currFormula = String($chat.val());
+		if (direction === "sub" && currFormula === "") return;
+		let newFormula = null;
+		let rollPrefix = this._getRollMode(html);
+		let qty = 0;
 		let dice = "";
 
-		let matchDice = dataset.formula;
-		const matchString = new RegExp(`${this.rawFormula("(?<qty>\\d*)", `(?<dice>${matchDice})`, html)}(?=[0-9]|$)`);
+		let match_dice = dataset.formula;
+		const match_string = new RegExp(`${this.rawFormula("(\\d*)", `(${match_dice})`, html)}(?=[0-9]|$)`);
 
-		if (matchString.test(currFormula)) {
-			const match = currFormula.match(matchString);
+		if (match_string.test(currFormula)) {
+			const match = currFormula.match(match_string);
 			const parts = {
 				txt: match[0] || "",
-				qty: Number(match.groups?.qty ?? (match[1] || 1)),
-				die: match.groups?.dice ?? (match[2] || ""),
+				qty: match[1] || "1",
+				die: match[2] || "",
 			};
 
 			if (parts.die === "" && match[3]) {
 				parts.die = match[3];
 			}
 
-			qty = direction === "add" ? parts.qty + (qty || 1) : parts.qty - (qty || 1);
+			qty = direction === "add" ? Number(parts.qty) + (qty || 1) : Number(parts.qty) - (qty || 1);
 
-			if (!qty && direction === "sub") {
-				let regexxx =`${this.rawFormula("(\\d+)", `(${matchDice})`, html)}(?=[0-9]|$)`;
-				const newMatchString = new RegExp(regexxx);
-				currFormula = currFormula.replace(newMatchString, "");
+			// Update the dice quantity.
+			qty = qty < 1 ? "" : qty;
+
+			if (qty === "" && direction === "sub") {
+				newFormula = "";
+				let regexxx =`${this.rawFormula("(\\d+)", `(${match_dice})`, html)}(?=[0-9]|$)`;
+				const new_match_string = new RegExp(regexxx);
+				currFormula = currFormula.replace(new_match_string, newFormula);
 				if (!(/(\d+[hsbe+-])/.test(currFormula))) {
+
 					currFormula = "";
 				}
-			} else currFormula = currFormula.replace(matchString, this.rawFormula(qty, parts.die, html));
-		} else if (currFormula === "") {
-			currFormula = `${rollPrefix} ${this.rawFormula(qty, dice || dataset.formula, html)}`;
+			} else {
+				newFormula = this.rawFormula(qty, parts.die, html);
+				currFormula = currFormula.replace(match_string, newFormula);
+			}
+			$chat.val(currFormula);
 		} else {
-			const signal = (/(\/r|\/gmr|\/br|\/sr) (?!-)/g.test(currFormula)) ? "+" : "";
-			currFormula = currFormula.replace(/(\/r|\/gmr|\/br|\/sr) /g, `${rollPrefix} ${this.rawFormula(qty, dice || dataset.formula, html)}${signal}`);
+			if (!qty) {
+				qty = 1;
+			}
+			if (currFormula === "") {
+				$chat.val(`${rollPrefix} ${this.rawFormula(qty, dice || dataset.formula, html)}`);
+			} else {
+				const signal = (/(\/r|\/gmr|\/br|\/sr) (?!-)/g.test(currFormula)) ? "" : "";
+				currFormula = currFormula.replace(/(\/r|\/gmr|\/br|\/sr) /g, `${rollPrefix} ${this.rawFormula(qty, dice || dataset.formula, html)}${signal}`);
+				$chat.val(currFormula);
+			}
 		}
-		chat.value = currFormula;
+		// TODO consider separate this into another method to make overriding simpler
+		// TODO e.g. cases where a button adds 2+ dice
 
 		// Add a flag indicator on the dice.
-		const flagNumber = direction === "add" ? qty : 0;
-		this.updateDiceFlags(flagNumber, dataset.formula);
+		qty = Number(qty);
+		const $flag_button = html.find(`.dice-tray__flag--${dataset.formula}`);
+		if (!qty) {
+			qty = direction === "add" ? 1 : 0;
+		}
 
-		currFormula = currFormula.replace(/(\/r|\/gmr|\/br|\/sr)(( \+)| )/g, `${rollPrefix} `).replace(/\+{2}/g, "+").replace(/-{2}/g, "-");
-		chat.value = currFormula;
+		if (qty > 0) {
+			$flag_button.text(qty);
+			$flag_button.removeClass("hide");
+		} else if (qty < 0) {
+			$flag_button.text(qty);
+		} else {
+			$flag_button.text("");
+			$flag_button.addClass("hide");
+		}
+
+		currFormula = $chat.val();
+		currFormula = currFormula.replace(/(\/r|\/gmr|\/br|\/sr)(( \+)| )/g, `${rollPrefix} `)
+			.replace(/\+{2}/g, "+")
+			.replace(/-{2}/g, "-");
+		$chat.val(currFormula);
 		this.applyModifier(html);
 	}
 }

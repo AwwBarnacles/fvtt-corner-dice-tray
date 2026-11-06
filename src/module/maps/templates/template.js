@@ -1,34 +1,9 @@
-import { DiceTrayPopOut } from "../../dice-tray-popout.js";
-import { DiceRowSettings } from "../../forms/DiceRowSettings.js";
-
 export default class TemplateDiceMap {
-	constructor() {
-		DiceTrayPopOut.PARTS.list.template = this.template;
-	}
-
-	_rightClickCommand;
-
-	/** Default value of the Compact Mode setting */
-	compactMode = this.rows.length < 2 && Object.keys(this.rows[0]).length < 7;
-
-	/** Default value of the Hide Number Input setting */
-	hideNumberInput = false;
-
-	/** Default value of the Hide Number +/- setting */
-	hideNumberButtons = false;
-
-	/** Default value of the Hide Roll Button setting */
-	hideRollButton = false;
-
 	/** Unmark the KH/KL buttons if a roll is made */
 	removeAdvOnRoll = true;
 
 	/** Shows the KH/KL buttons */
 	showExtraButtons = true;
-
-	template = "modules/dice-calculator/templates/tray.hbs";
-
-	#appliedDropListener;
 
 	/**
 	 * The formula that will be rendered on the KH/KL buttons
@@ -49,80 +24,51 @@ export default class TemplateDiceMap {
 	}
 
 	/**
-	 * Configuration for a dice tray button.
+	 * The dice rows that will be shown on the dice tray.
+	 * @property {String} color		Optional RGB or Hex value that colors a dice's background image. If none is preset, it will be white.
+	 * @property {String} img		The path to an image that will be shown on the button. If none is present, the label will be used instead.
+	 * @property {String} label		The label meant to be used when the button doesn't have a proper image, like Fate Dice or multiple dice.
+	 * @property {String} tooltip	Optional tooltip that will be shown instead of the key. Useful for special dice like Genesys system's.
+	 * @returns {[Object]}
 	 *
-	 * @typedef {Object} DiceButton
-	 * @property {boolean} [alternative] Changes how the dice is rendered. Used for some edge cases (e.g. AlienRPG).
-	 * @property {string} [color] Optional RGB or hex color applied to the die's background image. Defaults to white.
-	 * @property {string} [img] Path to the image shown on the button. If omitted, `label` is used instead.
-	 * @property {string} [label] Text displayed when no image is provided.
-	 * @property {string} [tooltip] Optional tooltip shown instead of the die key.
-	 *
-	 * @example Dice buttons with mixed image/label
-	 * ```js
-	 * d6: { img: "icons/dice/d6black.svg" },
-	 * "4df": { label: "Fate Dice" }
+	 * @example
+	 * ```js Dice buttons with mixed image/label
+	 * return [{
+	 * 	d6: { img: "icons/dice/d6black.svg" },
+	 *  "4df": { label: "Fate Dice" }
+	 * }];
 	 * ```
 	 *
 	 * @example Dice buttons with just labels
 	 * ```js
-	 * d6: { label: "1d6" },
-	 * "2d6": { label: "2d6" }
-	 * "3d6": { label: "3d6" }
+	 * return [{
+	 * 	d6: { label: "1d6" },
+	 *  "2d6": { label: "2d6" }
+	 *  "3d6": { label: "3d6" }
+	 * }];
 	 * ```
 	 *
-	 * @example Dice buttons with just labels
-	 * ```js
-	 * return {
-	 * d6: { label: "1d6" },
-	 * "2d6": { label: "2d6" }
-	 * "3d6": { label: "3d6" }
-	 * };
-	 * ```
 	 * @example Dice buttons with tooltips
 	 * ```js
-	 * da: { tooltip: "Proficiency" },
-	 * ds: { tooltip: "Setback" }
-	 * df: { tooltip: "Force" }
+	 * return [{
+	 * 	da: { tooltip: "Proficiency" },
+	 *  ds: { tooltip: "Setback" }
+	 *  df: { tooltip: "Force" }
+	 * }];
 	 * ```
-	*/
-
-	/**
-	 * The dice that will be shown on the dice tray.
-	 * @returns {Object<string, DiceButton>}
 	 */
 	get dice() {
-		return {
-			d3: { img: "modules/dice-calculator/assets/icons/d3black.svg" },
-			d4: { img: "icons/dice/d4black.svg" },
-			d5: { img: "modules/dice-calculator/assets/icons/d5black.svg" },
-			d6: { img: "icons/dice/d6black.svg" },
-			d7: { img: "modules/dice-calculator/assets/icons/d7black.svg" },
-			d8: { img: "icons/dice/d8black.svg" },
-			d10: { img: "icons/dice/d10black.svg" },
-			d12: { img: "icons/dice/d12black.svg" },
-			d14: { img: "modules/dice-calculator/assets/icons/d14black.svg" },
-			d16: { img: "modules/dice-calculator/assets/icons/d16black.svg" },
-			d20: { img: "icons/dice/d20black.svg" },
-			d24: { img: "modules/dice-calculator/assets/icons/d24black.svg" },
-			d30: { img: "modules/dice-calculator/assets/icons/d30black.svg" },
-			d100: { img: "modules/dice-calculator/assets/icons/d100black.svg" },
-		};
-	}
-
-	/**
-	 * Base Data of a Dice Row
-	 * @typedef {DiceButton & { drawer?: Object<string, DiceButton>}} DiceRow
-	 */
-
-	/**
-	 * The dice rows that will be shown on the dice tray. Limit of 7 dice per row due to size constraints.
-	 * @returns {Object<string, DiceRow>[]}
-	 */
-	get rows() {
-		const { d4, d6, d8, d10, d12, d20, d100 } = this.dice;
-		d10.drawer = { d100 };
-		return [{ d4, d6, d8, d10, d12, d20 }];
+		return [
+			{
+				d4: { img: "icons/dice/d4black.svg" },
+				d6: { img: "icons/dice/d6black.svg" },
+				d8: { img: "icons/dice/d8black.svg" },
+				d10: { img: "icons/dice/d10black.svg" },
+				d12: { img: "icons/dice/d12black.svg" },
+				d20: { img: "icons/dice/d20black.svg" },
+				d100: { img: "modules/dice-calculator/assets/icons/d100black.svg" },
+			}
+		];
 	}
 
 	/**
@@ -137,11 +83,6 @@ export default class TemplateDiceMap {
 		};
 	}
 
-	get rightClickCommand() {
-		this._rightClickCommand ??= game.settings.get("dice-calculator", "rightClickCommand");
-		return this._rightClickCommand;
-	}
-
 	/**
 	 * List of additional settings to be registered during the i18nInit hook.
 	 */
@@ -149,289 +90,31 @@ export default class TemplateDiceMap {
 		return {};
 	}
 
-	get textarea() {
-		const proseMirror = document.getElementById("chat-message") ?? ui.chat.popout?.element;
-		const editorContent = proseMirror?.querySelector(".editor-content.ProseMirror");
-		if (!editorContent) return proseMirror;
-		return {
-			get element() { return editorContent; },
-			get value() { return editorContent.innerText.replace(/\n$/, ""); },
-			set value(v) { editorContent.innerText = v; },
-			focus() { editorContent?.focus(); },
-		};
-	}
-
-	async roll(formula) {
-		return await ui.chat.processMessage(formula);
-	}
-
 	/**
 	 * Logic to set display the additiona KH/KL buttons and event listeners.
 	 * @param {HTMLElement} html
-	 * @param {Object} options
 	 */
-	applyLayout(html, options = {}) {
-		const disableExtras = options.hideAdv ?? game.settings.get("dice-calculator", "hideAdv");
-		if (this.showExtraButtons && !disableExtras) {
+	applyLayout(html) {
+		if (this.showExtraButtons) {
 			this._createExtraButtons(html);
 			this._extraButtonsLogic(html);
 		}
-	}
 
-	applyListeners(html) {
-		let blur = false;
-		let longPress = false;
-		let pointerDownEvent;
-		let holdTimer;
-		let leaveTimer;
-		let tooltipDirection;
-
-		function cancelTimer(timer) {
-			if (!timer) return;
-			clearTimeout(timer);
-			timer = null;
-		}
-		const drawers = html.querySelectorAll(".dice-tray__drawer");
-		const drawerDoors = html.querySelectorAll(".dice-tray button[data-drawer]");
-		// Auto-focuses on the chat box but wait for any drag events
-		html.querySelectorAll(".dice-tray button[draggable='true']").forEach((button) => {
-			const insideDrawer = button.parentElement.classList.contains("dice-tray__drawer");
-			const drawer = insideDrawer
-				? button.parentElement
-				: [...drawers].find((e) => e.dataset.drawer === button.dataset.drawer);
-			const drawerDoor = insideDrawer
-				? [...drawerDoors].find((e) => e.dataset.drawer === drawer.dataset.drawer)
-				: button;
-			button.addEventListener("pointerdown", (event) => {
-				pointerDownEvent = event;
-				// Open Drawer
-				if (drawer?.hidden && !insideDrawer) {
-					holdTimer = setTimeout(() => {
-						longPress = true;
-						holdTimer = null;
-						blur = false;
-						event.target.blur();
-						pointerDownEvent = null;
-						tooltipDirection = button.dataset?.tooltipDirection;
-						button.dataset.tooltipDirection = "LEFT";
-						if (game.tooltip.element) game.tooltip._setAnchor("LEFT");
-						drawer.hidden = false;
-					}, 250);
-				}
-				// Avoid chat notifications' box constantly "accordioning" when losing and gaining focus but still remove focus from buttons
-				if (!ui.sidebar.expanded && !ui.chat.popout?.rendered && !ui.chat.isPopout) {
-					blur = true;
-					return;
-				}
-				this.textarea.focus();
-			});
-			button.addEventListener("dragend", (event) => {
-				event.preventDefault();
-				if (pointerDownEvent) {
-					if (blur) pointerDownEvent.target.blur();
-					else this.textarea.focus();
-				}
-				blur = false;
-				pointerDownEvent = null;
-			});
-			button.addEventListener("pointerup", (event) => {
-				if (pointerDownEvent) {
-					if (blur) pointerDownEvent.target.blur();
-					else this.textarea.focus();
-				}
-				blur = false;
-				pointerDownEvent = null;
-				cancelTimer(holdTimer);
-			});
-			button.addEventListener("pointerleave", (event) => {
-				cancelTimer(holdTimer);
-				if (drawer && !drawer.hidden) {
-					leaveTimer = setTimeout(() => {
-						cancelTimer(leaveTimer);
-						drawerDoor.dataset.tooltipDirection = tooltipDirection;
-						drawer.hidden = true;
-					}, 500);
-				}
-			});
-			button.addEventListener("pointerenter", (event) => {
-				if (drawer && !drawer.hidden) {
-					cancelTimer(leaveTimer);
-				}
-			});
-			if (drawer && !insideDrawer) {
-				button.style.anchorName = `--${CSS.escape(button.dataset.formula)}`;
-				drawer.style.positionAnchor = button.style.anchorName;
-			}
-		});
-		html.querySelectorAll(".dice-tray #dice-tray-math button").forEach((button) => {
-			button.addEventListener("pointerdown", (event) => {
-				if (!ui.sidebar.expanded && !ui.chat.popout?.rendered && !ui.chat.isPopout) {
-					return;
-				}
-				event.preventDefault();
-				this.textarea.focus();
-			});
-		});
-		html.querySelectorAll(".dice-tray__button").forEach((button) => {
-			button.addEventListener("click", (event) => {
-				event.preventDefault();
-				if (longPress) {
-					longPress = false;
-					return;
-				}
-				const dataset = event.currentTarget.dataset;
-				this.updateChatDice(dataset, "add", html);
-			});
-
-			button.addEventListener("contextmenu", async (event) => {
-				event.preventDefault();
-				const dataset = event.currentTarget.dataset;
-				switch (this.rightClickCommand) {
-					case "roll": {
-						const rollPrefix = this._getMessageMode();
-						await this.roll(`${rollPrefix} ${dataset.formula}`);
-						break;
-					}
-					case "decrease":
-					default:
-						this.updateChatDice(dataset, "sub", html);
-				}
-			});
-
-			if (button.draggable) button.addEventListener("dragstart", (event) => {
-				const dataset = event.target.dataset;
-				const dragData = JSON.parse(JSON.stringify(dataset));
-				if (!dragData?.formula) return;
-				// Grab the modifier, if any.
-				const parentElement = event.target.closest(".dice-tray");
-				const modInput = parentElement.querySelector(".dice-tray__input");
-				const mod = modInput?.value;
-
-				// Grab the count, if any.
-				const qty = button.querySelector(".dice-tray__flag").textContent;
-				if (qty.length > 0) {
-					dragData.formula = `${qty}${dataset.formula}`;
-				}
-
-				// Apply the modifier.
-				if (mod && mod !== "0") {
-					dragData.formula += ` + ${mod}`;
-				}
-				dragData.origin = "dice-calculator";
-				event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
-			});
-		});
-
-		// Handle correcting the modifier math if it's null.
-		const diceTrayInput = html.querySelector(".dice-tray__input");
-		diceTrayInput?.addEventListener("input", (event) => {
-			let modVal = Number(event.target.value);
-			modVal = Number.isNaN(modVal) ? 0 : modVal;
-			event.target.value = modVal;
-			this.applyModifier(html, { noFocus: true });
-		});
-		diceTrayInput?.addEventListener("wheel", (event) => {
-			const diff = event.deltaY < 0 ? 1 : -1;
-			let modVal = event.currentTarget.value;
-			modVal = Number.isNaN(modVal) ? 0 : Number(modVal);
-			event.currentTarget.value = modVal + diff;
-			this.applyModifier(html, { noFocus: true });
-		});
-		diceTrayInput?.addEventListener("focus", (event) => {
-			diceTrayInput.select();
-		});
-
-		// Handle +/- buttons near the modifier input.
-		html.querySelectorAll("button.dice-tray__math")?.forEach((button) => {
-			button.addEventListener("click", (event) => {
-				event.preventDefault();
-				let modVal = Number(html.querySelector('input[name="dice.tray.modifier"]').value);
-				modVal = Number.isNaN(modVal) ? 0 : modVal;
-
-				switch (event.currentTarget.dataset.formula) {
-					case "+1":
-						modVal += 1;
-						break;
-					case "-1":
-						modVal -= 1;
-						break;
-					default:
-						break;
-				}
-
-				html.querySelector('input[name="dice.tray.modifier"]').value = modVal;
-				this.applyModifier(html);
-			});
-		});
+		if (html.is("aside")) return;
 		/** Clicking the Roll button clears and hides all orange number flags, and unmark the KH/KL keys */
-		html.querySelector(".dice-tray__roll")?.addEventListener("click", async (event) => {
+		html.find(".dice-tray__roll").on("click", (event) => {
 			event.preventDefault();
-			await this.roll(this.textarea.value);
-			this.textarea.value = "";
-			event.target.blur();
-		});
-	}
-
-	applyDropListener() {
-		if (this.#appliedDropListener) return;
-		document.documentElement.addEventListener("drop", async (event) => {
-			// This try-catch is needed because it conflicts with other modules
-			try {
-				const data = JSON.parse(event.dataTransfer.getData("text/plain") || "{}");
-				// If there's a formula, trigger the roll.
-				if (data?.origin === "dice-calculator" && data?.formula) {
-					const rollPrefix = this._getMessageMode();
-					await this.roll(`${rollPrefix} ${data.formula}`);
-					this.reset();
-					event.stopImmediatePropagation();
-				}
-			} catch(err) {
-				// Unable to Parse Data, Return Event
-				return event;
-			}
-		});
-		this.#appliedDropListener = true;
-	}
-
-	async render() {
-		const content = await foundry.applications.handlebars.renderTemplate(this.template, {
-			dicerows: game.settings.get("dice-calculator", "diceRows"),
-			settings: DiceRowSettings.settingsKeys.reduce((obj, key) => {
-				obj[key] = game.settings.get("dice-calculator", key);
-				return obj;
-			}, {})
+			let spoofed = this.triggerRollClick();
+			html.find("#chat-message").trigger(spoofed);
+			this._resetTray(html);
 		});
 
-		if (this.rendered) this.element.remove();
-		if (content.length > 0) {
-			const inputElement = document.getElementById("chat-message");
-			inputElement.insertAdjacentHTML("afterend", content);
-			this.element = inputElement.parentElement.querySelector(".dice-tray");
-			this.applyLayout(this.element);
-			this.applyListeners(this.element);
-			this.applyDropListener();
-		}
-		this.rendered = true;
-	}
-
-	/**
-	 * Clears the dice tray's orange markers
-	 */
-	reset() {
-		this.textarea.value = "";
-		const resetTray = (html) => {
-			if (!html) return;
-			if (html.querySelector(".dice-tray__input")) html.querySelector(".dice-tray__input").value = 0;
-			for (const flag of html.querySelectorAll(".dice-tray__flag:not(.hide)")) {
-				flag.textContent = "";
-				flag.classList.add("hide");
+		/** Sending a message on the chat form clears the text and hides the orange numbers */
+		html.find("#chat-message").keydown((e) => {
+			if (e.code === "Enter" || e.key === "Enter" || e.keycode === "13") {
+				this._resetTray(html);
 			}
-			if (this.removeAdvOnRoll) {
-				html.querySelector(".dice-tray__ad.active")?.classList?.remove("active");
-			}
-		};
-		resetTray(this.element);
-		resetTray(this.popout?.element);
+		});
 	}
 
 	/**
@@ -440,30 +123,23 @@ export default class TemplateDiceMap {
 	 */
 	_createExtraButtons(html) {
 		const { kh, kl } = this.buttonFormulas;
-		const math = html.querySelector("#dice-tray-math");
-		if (!math) return;
-		math.removeAttribute("hidden");
-		const div = document.createElement("div");
-		div.classList.add("dice-tray__stacked", "flexcol");
-
-		const buttonAdv = document.createElement("button");
-		buttonAdv.classList.add("dice-tray__ad", "dice-tray__advantage");
-		buttonAdv.setAttribute("data-formula", kh);
-		buttonAdv.setAttribute("data-tooltip", game.i18n.localize(this.labels.advantage));
-		buttonAdv.setAttribute("data-tooltip-direction", "UP");
-		buttonAdv.textContent = game.i18n.localize(this.labels.adv);
-
-		const buttonDis = document.createElement("button");
-		buttonDis.classList.add("dice-tray__ad", "dice-tray__disadvantage");
-		buttonDis.setAttribute("data-formula", kl);
-		buttonDis.setAttribute("data-tooltip", game.i18n.localize(this.labels.disadvantage));
-		buttonDis.setAttribute("data-tooltip-direction", "UP");
-		buttonDis.textContent = game.i18n.localize(this.labels.dis);
-
-		div.appendChild(buttonAdv);
-		div.appendChild(buttonDis);
-
-		math.append(div);
+		html.find("#dice-tray-math").removeAttr("hidden");
+		html.find("#dice-tray-math").append(
+			`<div class="dice-tray__stacked flexcol">
+                <button class="dice-tray__ad dice-tray__advantage"
+					data-formula="${kh}"
+					data-tooltip="${game.i18n.localize(this.labels.advantage)}"
+					data-tooltip-direction="UP">
+                    ${game.i18n.localize(this.labels.adv)}
+                </button>
+                <button class="dice-tray__ad dice-tray__disadvantage"
+					data-formula="${kl}"
+					data-tooltip="${game.i18n.localize(this.labels.disadvantage)}"
+					data-tooltip-direction="UP">
+                    ${game.i18n.localize(this.labels.dis)}
+                </button>
+            </div>`
+		);
 	}
 
 	/**
@@ -472,84 +148,98 @@ export default class TemplateDiceMap {
 	 * @param {HTMLElement} html
 	 */
 	_extraButtonsLogic(html) {
-		for (const button of html.querySelectorAll(".dice-tray__ad")) {
-			button.addEventListener("click", (event) => {
-				event.preventDefault();
-				const dataset = event.currentTarget.dataset;
-				const chat = this.textarea;
-				let chatVal = String(chat.value);
-				const matchString = /\d*d\d+[khl]*/;
+		html.find(".dice-tray__ad").attr("draggable", true).on("click", (event) => {
+			event.preventDefault();
+			let dataset = event.currentTarget.dataset;
+			let $chat = html.find("#chat-form textarea");
+			if (html.is("aside")) $chat = this.popout.chatElement.find("#chat-form textarea");
+			let chat_val = String($chat.val());
+			let match_string = /\d*d\d+[khl]*/;
 
-				// If there's a d20, toggle the current if needed.
-				if (matchString.test(chatVal)) {
-					// If there was previously a kh or kl, update it.
-					if (/d\d+k[hl]/g.test(chatVal)) {
-						chatVal = chatVal.replace(/(\d*)(d\d+)(k[hl]\d*)/g, (match, p1, p2, p3, offset, string) => {
-							let diceKeep = this.updateDiceKeep(p1, p2, p3, -1, dataset.formula);
-							html.querySelector(`.dice-tray__flag--${p2}`).textContent = diceKeep.count;
-							return diceKeep.content;
-						});
-					}
-					// Otherwise, add it.
-					else {
-						chatVal = chatVal.replace(/(\d*)(d\d+)/g, (match, p1, p2, offset, string) => {
-							let diceKeep = this.updateDiceKeep(p1, p2, "", 1, dataset.formula);
-							html.querySelector(`.dice-tray__flag--${p2}`).textContent = diceKeep.count;
-							return diceKeep.content;
-						});
-					}
+			// If there's a d20, toggle the current if needed.
+			if (match_string.test(chat_val)) {
+				// If there was previously a kh or kl, update it.
+				if (/d\d+k[hl]/g.test(chat_val)) {
+					chat_val = chat_val.replace(/(\d*)(d\d+)(k[hl]\d*)/g, (match, p1, p2, p3, offset, string) => {
+						let diceKeep = this.updateDiceKeep(p1, p2, p3, -1, dataset.formula);
+						html.find(`.dice-tray__flag--${p2}`).text(diceKeep.count);
+						return diceKeep.content;
+					});
 				}
-				// else {
-				// 	let diceKeep = this.updateDiceKeep("1", "d20", "", 1, dataset.formula);
-				// 	html.find(".dice-tray__flag--d20").text(diceKeep.count);
-				// 	chatVal += diceKeep.content;
-				// }
+				// Otherwise, add it.
+				else {
+					chat_val = chat_val.replace(/(\d*)(d\d+)/g, (match, p1, p2, offset, string) => {
+						let diceKeep = this.updateDiceKeep(p1, p2, "", 1, dataset.formula);
+						html.find(`.dice-tray__flag--${p2}`).text(diceKeep.count);
+						return diceKeep.content;
+					});
+				}
+			}
+			// else {
+			// 	let diceKeep = this.updateDiceKeep("1", "d20", "", 1, dataset.formula);
+			// 	html.find(".dice-tray__flag--d20").text(diceKeep.count);
+			// 	chat_val += diceKeep.content;
+			// }
 
-				// Handle toggle classes.
-				const toggleClass = (selector, condition) => {
-					html.querySelector(selector)?.classList.toggle("active", condition);
-				};
-				toggleClass(".dice-tray__advantage", chatVal.includes("kh"));
-				toggleClass(".dice-tray__disadvantage", chatVal.includes("kl"));
-				// Update the value.
-				chat.value = chatVal;
-			});
+			// Handle toggle classes.
+			if (chat_val.includes("kh")) {
+				html.find(".dice-tray__advantage").addClass("active");
+			} else {
+				html.find(".dice-tray__advantage").removeClass("active");
+			}
+
+			if (chat_val.includes("kl")) {
+				html.find(".dice-tray__disadvantage").addClass("active");
+			} else {
+				html.find(".dice-tray__disadvantage").removeClass("active");
+			}
+			// Update the value.
+			$chat.val(chat_val);
+		});
+	}
+
+	_resetTray(html) {
+		html.find(".dice-tray__input").val(0);
+		html.find(".dice-tray__flag").text("").addClass("hide");
+		if (this.removeAdvOnRoll) {
+			html.find(".dice-tray__ad").removeClass("active");
 		}
 	}
 
 	/**
 	 * Logic to apply the number on the -/+ selector.
 	 * @param {HTMLElement} html
-	 * @param {Object} options
 	 */
-	applyModifier(html, options = {}) {
-		const modInput = html.querySelector(".dice-tray__input");
-		if (!modInput) return;
-		const modVal = Number(modInput.value);
+	applyModifier(html) {
+		let $mod_input = html.find(".dice-tray__input");
+		if (!$mod_input.length && this.popout?.rendered) {
+			$mod_input = $(this.popout.element).find(".dice-tray__input");
+		}
+		const mod_val = Number($mod_input.val());
 
-		if (modInput.length === 0 || isNaN(modVal)) return;
+		if ($mod_input.length === 0 || isNaN(mod_val)) return;
 
-		let modString = "";
-		if (modVal > 0) {
-			modString = `+${modVal}`;
-		} else if (modVal < 0) {
-			modString = `${modVal}`;
+		let mod_string = "";
+		if (mod_val > 0) {
+			mod_string = `+${mod_val}`;
+		} else if (mod_val < 0) {
+			mod_string = `${mod_val}`;
 		}
 
-		const chat = this.textarea;
-		const chatVal = String(chat.value);
+		const $chat = html.find("#chat-form textarea");
+		const chat_val = String($chat.val());
 
-		const matchString = /(\+|-)(\d+)$/;
-		if (matchString.test(chatVal)) {
-			chat.value = chatVal.replace(matchString, modString);
-		} else if (chatVal !== "") {
-			chat.value = chatVal + modString;
+		const match_string = /(\+|-)(\d+)$/;
+		if (match_string.test(chat_val)) {
+			$chat.val(chat_val.replace(match_string, mod_string));
+		} else if (chat_val !== "") {
+			$chat.val(chat_val + mod_string);
 		} else {
-			const rollPrefix = this._getMessageMode();
-			chat.value = `${rollPrefix} ${modString}`;
+			const rollPrefix = this._getRollMode(html);
+			$chat.val(`${rollPrefix} ${mod_string}`);
 		}
-		if (/(\/r|\/gmr|\/br|\/sr) $/g.test(chat.value)) {
-			chat.value = "";
+		if (/(\/r|\/gmr|\/br|\/sr) $/g.test($chat.val())) {
+			$chat.val("");
 		}
 	}
 
@@ -563,8 +253,30 @@ export default class TemplateDiceMap {
 	 * @returns {String}
 	 */
 	rawFormula(qty, dice, html) {
-		if (Number.isNumeric(dice)) dice = "";
 		return `${qty === "" ? 1 : qty}${dice}`;
+	}
+
+	/**
+	 * Creates a fake Enter keypress to trigger the chat message box.
+	 * @returns {{}}
+	 */
+	triggerRollClick() {
+		// Set up the keypress event properties.
+		let spoofedProperties = {
+			which: 13,
+			keycode: 13,
+			code: "Enter",
+			key: "Enter",
+		};
+		// Create an event for the keypress.
+		let spoofed = $.Event("keydown", spoofedProperties);
+		// Create a second event for the originalEvent property.
+		let spoofedOriginal = $.Event("keydown", spoofedProperties);
+		spoofedOriginal.isComposing = false;
+		// Assign the original event.
+		spoofed.originalEvent = spoofedOriginal;
+
+		return spoofed;
 	}
 
 	/**
@@ -575,98 +287,108 @@ export default class TemplateDiceMap {
 	 * @returns
 	 */
 	updateChatDice(dataset, direction, html) {
-		let currFormula = String(this.textarea.value);
-
+		const $chat = html.find("#chat-form textarea");
+		let currFormula = String($chat.val());
 		if (direction === "sub" && currFormula === "") return;
-		let newFormula = dataset.formula;
-		let qty = 1;
+		let newFormula = null;
+		let rollPrefix = this._getRollMode(html);
+		let qty = 0;
 		let dice = "";
-		let matchDice = "\\d*";
-		let rollPrefix = this._getMessageMode();
 
-		const isCustomCommand = newFormula.startsWith("/");
-		if (isCustomCommand) {
-			const space = currFormula.indexOf(" ");
+		let match_dice = dataset.formula;
+		if (dataset.formula === "d10") {
+			// Filter out d100s
+			match_dice = "d10(?!0)";
+		} else if (/^(\d+)(d.+)/.test(dataset.formula)) {
+			const match = dataset.formula.match(/^(\d+)(d.+)/);
+			qty = Number(match[1]);
+			match_dice = match[2];
+			dice = match[2];
+		}
+		// Catch KH/KL
+		match_dice = `${match_dice}[khl]*`;
 
-			if (space === -1) {
-				rollPrefix = newFormula;
+		const match_string = new RegExp(`${this.rawFormula("(\\d*)", `(${match_dice})`, html)}(?=\\+|\\-|$)`);
+		if (match_string.test(currFormula)) {
+			const match = currFormula.match(match_string);
+			const parts = {
+				qty: match.groups?.qty ?? (match[1] || "1"),
+				die: match.groups?.dice ?? (match[2] || ""),
+			};
+
+			if (parts.die === "" && match[3]) {
+				parts.die = match[3];
+			}
+
+			qty = direction === "add" ? Number(parts.qty) + (qty || 1) : Number(parts.qty) - (qty || 1);
+
+			// Update the dice quantity.
+			qty = qty < 1 ? "" : qty;
+
+			if (qty === "" && direction === "sub") {
 				newFormula = "";
-			} else {
-				rollPrefix = newFormula.slice(0, space);
-				newFormula = newFormula.slice(space + 1).trim();
-			}
-		}
-		const emptyFormula = isCustomCommand && !newFormula;
-
-		const diceMatch = newFormula.match(/^(\d*)(d.+)/);
-		if (diceMatch) {
-			qty = Number(diceMatch[1]) || 1;
-			dice = diceMatch[2];
-			// Prevent matching d10 when looking for d100, etc.
-			matchDice = `${dice}(?!0)[khl]*`;
-		}
-
-		const matchString = new RegExp(`${this.rawFormula("(?<qty>\\d*)", `(?<dice>${matchDice})`, html)}(?=\\+|\\-|$)`);
-		const match = currFormula ? currFormula.match(matchString) : null;
-		if (match) {
-			if (emptyFormula) {
-				qty = 0;
-			} else {
-				const currentQty = Number(match.groups?.qty || 1);
-				const delta = qty || 1;
-
-				qty = direction === "add" ? currentQty + delta : currentQty - delta;
-			}
-
-			if (!qty && direction === "sub") {
-				currFormula = currFormula.replace(matchString, "");
-				// Clear formula if remaining formula is something like "/r kh"
-				if (new RegExp(`${rollPrefix}\\s*(?!.*d\\d+.*)`).test(currFormula)) {
-					return this.reset();
+				const new_match_string = new RegExp(`${this.rawFormula("(\\d*)", `(${match_dice})`, html)}(?=\\+|\\-|$)`);
+				currFormula = currFormula.replace(new_match_string, newFormula);
+				if (new RegExp(`${rollPrefix}\\s+(?!.*d\\d+.*)`).test(currFormula)) {
+					currFormula = "";
 				}
-			} else if (!emptyFormula) {
-				const currentDie = match.groups?.dice || dice || newFormula;
-				currFormula = currFormula.replace(matchString, this.rawFormula(qty, currentDie, html));
+			} else {
+				newFormula = this.rawFormula(qty, parts.die, html);
+				currFormula = currFormula.replace(match_string, newFormula);
 			}
-		} else if (currFormula === "") {
-			if (emptyFormula) currFormula = rollPrefix;
-			else currFormula = `${rollPrefix} ${this.rawFormula(qty, dice || newFormula, html)}`;
+			$chat.val(currFormula);
 		} else {
-			const signal = (/(\/r|\/gmr|\/br|\/sr) (?!-)/g.test(currFormula)) ? "+" : "";
-			currFormula = currFormula.replace(/(\/r|\/gmr|\/br|\/sr) /g, `${rollPrefix} ${this.rawFormula(qty, dice || newFormula, html)}${signal}`);
+			if (!qty) {
+				qty = 1;
+			}
+			if (currFormula === "") {
+				$chat.val(`${rollPrefix} ${this.rawFormula(qty, dice || dataset.formula, html)}`);
+			} else {
+				const signal = (/(\/r|\/gmr|\/br|\/sr) (?!-)/g.test(currFormula)) ? "+" : "";
+				currFormula = currFormula.replace(/(\/r|\/gmr|\/br|\/sr) /g, `${rollPrefix} ${this.rawFormula(qty, dice || dataset.formula, html)}${signal}`);
+				$chat.val(currFormula);
+			}
 		}
-		currFormula = currFormula
-			.replace(/(\/r|\/gmr|\/br|\/sr)(( \+)| )/g, `${rollPrefix} `)
-			.replace(/\+{2}/g, "+")
-			.replace(/-{2}/g, "-")
-			.replace(/\+$/g, "");
 
-		this.textarea.value = currFormula;
-		this.updateDiceFlags(qty, newFormula);
+		// TODO consider separate this into another method to make overriding simpler
+		// TODO e.g. cases where a button adds 2+ dice
+
+		// Add a flag indicator on the dice.
+		qty = Number(qty);
+		let $flag_button = [html.find(`.dice-tray__flag--${dataset.formula}`)];
+		if (this.popout?.rendered) {
+			$flag_button.push($(this.popout.element).find(`.dice-tray__flag--${dataset.formula}`));
+		}
+		if (!qty) {
+			qty = direction === "add" ? 1 : 0;
+		}
+
+		for (const button of $flag_button) {
+			if (qty > 0) {
+				button.text(qty);
+				button.removeClass("hide");
+			} else if (qty < 0) {
+				button.text(qty);
+			} else {
+				button.text("");
+				button.addClass("hide");
+			}
+		}
+
+		currFormula = $chat.val();
+		currFormula = currFormula.replace(/(\/r|\/gmr|\/br|\/sr)(( \+)| )/g, `${rollPrefix} `).replace(/\+{2}/g, "+").replace(/-{2}/g, "-").replace(/\+$/g, "");
+		$chat.val(currFormula);
 		this.applyModifier(html);
 	}
 
 	/**
-	 * Updates the orange indicator above the dice button.
-	 * @param {Number} qty
-	 * @param {String} formula
-	 */
-	updateDiceFlags(qty, formula) {
-		const selector = CSS.escape(`dice-tray__flag--${formula}`); // There is a chance the formula contains invalid CSS character (e.g. "/")
-		const flags = document.querySelectorAll(`.${selector}:not(.sidebar-preview .${selector})`);
-		for (const flag of flags) {
-			flag.textContent = qty !== 0 ? qty : "";
-			flag.classList.toggle("hide", qty === 0);
-		}
-	}
-
-	/**
-	 * Gets the selected roll mode.
+	 * Gets the selected roll mode
+	 * @param {HTMLElement} html
 	 * @returns {String}
 	 */
-	_getMessageMode() {
-		const messageMode = game.settings.get("core", "messageMode");
-		switch (messageMode) {
+	_getRollMode(html) {
+		const rollMode = game.settings.get("core", "rollMode");
+		switch (rollMode) {
 			case "gmroll":
 				return "/gmr";
 			case "blindroll":
@@ -683,34 +405,44 @@ export default class TemplateDiceMap {
      * Process a formula to apply advantage or disadvantage. Should be used
      * within a regex replacer function's callback.
      *
-     * @param {string} count Current dice count in the formula.
-     * @param {string} dice Current dice in the formula.
-     * @param {string} khl Current kh/kl in the formula.
-     * @param {number} countDiff Integer to adjust the dice count by.
-     * @param {string} newKhl Formula of the button (kh or kl).
+     * @param {string} count | String match for the current dice count.
+     * @param {string} dice | String match for the dice type (d20).
+     * @param {string} khl | String match for kh|l (includes kh|l count).
+     * @param {number} countDiff | Integer to adjust the dice count by.
+     * @param {string} newKhl | Formula on the button (kh or kl).
      * @returns {object} Object with content and count keys.
      */
 	updateDiceKeep(count, dice, khl, countDiff, newKhl) {
 		// Start by getting the current number of dice (minimum 1).
-		const keep = Number.isNumeric(count) ? Math.max(Number(count), 1) : 1;
+		let keep = Number.isNumeric(count) ? Number(count) : 1;
+		if (keep === 0) {
+			keep = 1;
+		}
 
 		// Apply the count diff to adjust how many dice we need for adv/dis.
 		let newCount = keep + countDiff;
 		let newKeep = newCount - 1;
 
+		// Handling toggling on/off advantage.
 		if (khl) {
-			// Toggling between kh and kl — reset to base count
+			// If switching from adv to dis or vice versa, adjust the formula to
+			// simply replace the kh and kl while leaving the rest as it was prior
+			// to applying the count diff.
 			if (!khl.includes(newKhl)) {
 				newCount = keep;
 				newKeep = newCount - 1;
 				khl = newKhl;
 			}
-			// Toggling off adv/dis
+			// If the adv/dis buttons were clicked after they were previously
+			// applied, we need to remove them. If it's currently 2d20kh or kl,
+			// change it to 1d20. Otherwise, only strip the kh or kl.
 			else {
 				newCount = keep > 2 ? keep : newCount;
 				newKeep = 0;
 			}
-		} else {
+		}
+		// If adv/dis weren't enabled, then that means we need to enable them.
+		else {
 			khl = newKhl;
 		}
 
@@ -724,10 +456,10 @@ export default class TemplateDiceMap {
 		let result = `${newCount > 0 ? newCount : 1}${dice}`;
 		// Append kh or kl if needed.
 		if (newCount > 1 && newKeep > 0) {
-			result = `${result}${newKhl}`;
+			result = `${result}${newKhl.includes("kh") ? "kh" : "kl"}`;
 		}
 
-		// TODO: This allows for keeping multiple dice (e.g. 3d20kh2), but in this case, we only need to keep one.
+		// TODO: This allows for keeping multiple dice, but in this case, we only need to keep one.
 		// if (newCount > 1 && newKeep > 1) result = `${result}${newKeep}`;
 
 		// Return an object with the updated text and the new count.
@@ -735,11 +467,5 @@ export default class TemplateDiceMap {
 			content: result,
 			count: newCount
 		};
-	}
-
-	async togglePopout() {
-		this.popout ??= new DiceTrayPopOut();
-		if (this.popout.rendered) await this.popout.close({ animate: false });
-		else await this.popout.render(true);
 	}
 }
