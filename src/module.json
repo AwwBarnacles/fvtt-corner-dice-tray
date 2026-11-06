@@ -12,8 +12,8 @@
 			"discord": "mclemente#5524"
 		}
 	],
-	"url": "This is auto replaced",
-	"version": "This is auto replaced",
+	"url": "https://github.com/AwwBarnacles/fvtt-dice-tray",
+	"version": "4.0.6-corner",
 	"compatibility": {
 		"minimum": "14",
 		"verified": "14"
@@ -63,6 +63,6 @@
 			"path": "lang/cs.json"
 		}
 	],
-	"manifest": "This is auto replaced",
-	"download": "This is auto replaced"
+	"manifest": "https://github.com/AwwBarnacles/fvtt-dice-tray/releases/latest/download/module.json",
+	"download": "https://github.com/AwwBarnacles/fvtt-dice-tray/releases/latest/download/module.zip"
 }
