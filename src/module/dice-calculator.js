@@ -74,6 +74,23 @@ async function togglePopout() {
 	else await CONFIG.DICETRAY.popout.render(true);
 }
 
+let dockedTray = null;
+
+// Pins the tray to the bottom right of the screen while the sidebar is collapsed
+function moveDiceTray() {
+	if (!dockedTray) return;
+	if (ui.sidebar?._collapsed) {
+		document.body.appendChild(dockedTray);
+		dockedTray.classList.add("dice-tray--corner");
+		return;
+	}
+	dockedTray.classList.remove("dice-tray--corner");
+	const form = ui.chat?.element?.find("#chat-form")[0];
+	if (form) form.after(dockedTray);
+}
+
+Hooks.on("collapseSidebar", () => moveDiceTray());
+
 Hooks.on("renderSidebarTab", async (app, html, data) => {
 	// Exit early if necessary;
 	if (app.tabName !== "chat") return;
@@ -91,7 +108,12 @@ Hooks.on("renderSidebarTab", async (app, html, data) => {
 
 		if (content.length > 0) {
 			let $content = $(content);
+			if (!app.popOut) $("body > .dice-tray--corner").remove();
 			$chat_form.after($content);
+			if (!app.popOut) {
+				dockedTray = $content[0];
+				moveDiceTray();
+			}
 			$content.find(".dice-tray__button").on("click", (event) => {
 				event.preventDefault();
 				let dataset = event.currentTarget.dataset;

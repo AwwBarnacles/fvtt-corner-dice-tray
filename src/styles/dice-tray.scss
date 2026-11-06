@@ -212,3 +212,14 @@ $green: #0a9843;
 		}
 	}
 }
+
+.dice-tray.dice-tray--corner {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	z-index: 100;
+	padding: 4px;
+	border-radius: 5px;
+	background: rgba(0, 0, 0, 0.75);
+	pointer-events: all;
+}
