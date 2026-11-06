@@ -1,4 +1,10 @@
 <section class="dice-tray">
+    <select class="dice-tray__roll-mode" name="dice.tray.rollMode">
+        <option value="publicroll">{{localize "CHAT.RollPublic"}}</option>
+        <option value="gmroll">{{localize "CHAT.RollPrivate"}}</option>
+        <option value="blindroll">{{localize "CHAT.RollBlind"}}</option>
+        <option value="selfroll">{{localize "CHAT.RollSelf"}}</option>
+    </select>
     {{#each dicerows as |dice|}}
     <div class="dice-tray__buttons flexrow">
 		{{#each dice as |data key|}}

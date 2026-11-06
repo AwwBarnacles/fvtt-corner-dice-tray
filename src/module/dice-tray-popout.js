@@ -46,6 +46,11 @@ export class DiceTrayPopOut extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	_onRender(context, options) {
 		super._onRender(context, options);
+		const rollMode = this.element.querySelector(".dice-tray__roll-mode");
+		if (rollMode) {
+			rollMode.value = game.settings.get("core", "rollMode");
+			rollMode.addEventListener("change", (event) => game.settings.set("core", "rollMode", event.currentTarget.value));
+		}
 		for (const section of this.element.querySelectorAll(".dice-tray__button")) {
 			section.addEventListener("click", (event) => {
 				event.preventDefault();

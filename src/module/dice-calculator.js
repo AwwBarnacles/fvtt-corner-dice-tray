@@ -74,22 +74,12 @@ async function togglePopout() {
 	else await CONFIG.DICETRAY.popout.render(true);
 }
 
-let dockedTray = null;
-
-// Pins the tray to the bottom right of the screen while the sidebar is collapsed
-function moveDiceTray() {
-	if (!dockedTray) return;
-	if (ui.sidebar?._collapsed) {
-		document.body.appendChild(dockedTray);
-		dockedTray.classList.add("dice-tray--corner");
-		return;
-	}
-	dockedTray.classList.remove("dice-tray--corner");
-	const form = ui.chat?.element?.find("#chat-form")[0];
-	if (form) form.after(dockedTray);
-}
-
-Hooks.on("collapseSidebar", () => moveDiceTray());
+const ROLL_MODES = {
+	publicroll: "/r",
+	gmroll: "/gmr",
+	blindroll: "/br",
+	selfroll: "/sr"
+};
 
 Hooks.on("renderSidebarTab", async (app, html, data) => {
 	// Exit early if necessary;
@@ -108,12 +98,21 @@ Hooks.on("renderSidebarTab", async (app, html, data) => {
 
 		if (content.length > 0) {
 			let $content = $(content);
-			if (!app.popOut) $("body > .dice-tray--corner").remove();
-			$chat_form.after($content);
-			if (!app.popOut) {
-				dockedTray = $content[0];
-				moveDiceTray();
-			}
+			// The tray lives in the bottom right corner instead of the chat tab
+			$("body > .dice-tray--corner").remove();
+			$content.addClass("dice-tray--corner");
+			$("body").append($content);
+			// Let the shared tray logic see both the tray and the chat form
+			html = html.add($content);
+			const $rollMode = $content.find(".dice-tray__roll-mode");
+			$rollMode.val(game.settings.get("core", "rollMode"));
+			$rollMode.on("change", async (event) => {
+				const mode = event.currentTarget.value;
+				await game.settings.set("core", "rollMode", mode);
+				const $chat = html.find("#chat-form textarea");
+				$chat.val($chat.val().replace(/^\/(r|gmr|br|sr)(?= )/, ROLL_MODES[mode]));
+				html.find("#roll-type, select[name='rollMode']").val(mode);
+			});
 			$content.find(".dice-tray__button").on("click", (event) => {
 				event.preventDefault();
 				let dataset = event.currentTarget.dataset;
