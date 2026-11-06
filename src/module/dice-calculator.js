@@ -35,8 +35,14 @@ Hooks.once("i18nInit", () => {
 	});
 	if (game.settings.get("dice-calculator", "enableDiceTray")) {
 		let wasAtBottom = true;
-		Hooks.on("dice-calculator.forceRender", () => CONFIG.DICETRAY.render());
-		Hooks.once("renderChatLog", () => CONFIG.DICETRAY.render());
+		Hooks.on("dice-calculator.forceRender", async () => {
+			await CONFIG.DICETRAY.render();
+			moveDiceTray();
+		});
+		Hooks.once("renderChatLog", async () => {
+			await CONFIG.DICETRAY.render();
+			moveDiceTray();
+		});
 		Hooks.on("renderChatLog", (chatlog, html, data, opt) => {
 			if (!chatlog.isPopout) return;
 			moveDiceTray();
@@ -77,8 +83,21 @@ function getProviderString(regex) {
 }
 
 function moveDiceTray() {
+	const tray = CONFIG.DICETRAY.element;
+	if (!tray) return;
+	const popoutChat = ui.chat.popout?.rendered && ui.chat.isPopout;
+	const expanded = ui.sidebar?.expanded ?? true;
+	const chatTabActive = ui.sidebar?.tabGroups?.primary === "chat" || ui.chat.active;
+	tray.classList.remove("dice-tray--corner", "dice-tray--hidden");
+	if (!popoutChat && !expanded) {
+		// Sidebar collapsed: pin the tray to the bottom right corner of the screen
+		document.body.appendChild(tray);
+		tray.classList.add("dice-tray--corner");
+		return;
+	}
 	const inputElement = document.getElementById("chat-message");
-	inputElement.insertAdjacentElement("afterend", CONFIG.DICETRAY.element);
+	inputElement.insertAdjacentElement("afterend", tray);
+	if (!popoutChat && !chatTabActive) tray.classList.add("dice-tray--hidden");
 }
 
 Hooks.on("getSceneControlButtons", (controls) => {
