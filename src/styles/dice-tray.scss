@@ -224,6 +224,11 @@ $green: #0a9843;
 	pointer-events: all;
 }
 
+#sidebar.dice-tray-sidebar {
+	box-sizing: border-box;
+	max-height: var(--dice-tray-sidebar-height);
+}
+
 .dice-tray__roll-mode {
 	width: 100%;
 	margin-bottom: 2px;

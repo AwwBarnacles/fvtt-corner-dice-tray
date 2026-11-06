@@ -27,7 +27,7 @@ const sourceDirectory = "./src";
 const distDirectory = "./dist";
 const stylesDirectory = `${sourceDirectory}/styles`;
 const stylesExtension = "scss";
-const sourceFileExtension = "js";
+const sourceFileExtension = "{js,mjs}";
 const staticFiles = ["assets", "fonts", "lang", "packs", "templates", "module.json"];
 
 /** ******************/

@@ -5,6 +5,7 @@ import { DiceTrayPopOut } from "./dice-tray-popout.js";
 import { KEYS } from "./maps/_keys.js";
 import { preloadTemplates } from "./preloadTemplates.js";
 import { registerSettings } from "./settings.js";
+import { reserveSidebarSpace } from "./sidebar-clearance.mjs";
 
 // Initialize module
 Hooks.once("init", () => {
@@ -81,15 +82,21 @@ const ROLL_MODES = {
 	selfroll: "/sr"
 };
 
+let clearSidebarSpace;
+
 Hooks.on("renderSidebarTab", async (app, html, data) => {
 	// Exit early if necessary;
 	if (app.tabName !== "chat") return;
 	const enableTray =
 		game.user.getFlag("dice-calculator", "enableDiceTray")
 		?? game.settings.get("dice-calculator", "enableDiceTray");
+	if (!enableTray) {
+		clearSidebarSpace?.();
+		clearSidebarSpace = undefined;
+		$("body > .dice-tray--corner").remove();
+	}
 	if (enableTray) {
 		// Prepare the dice tray for rendering.
-		let $chat_form = html.find("#chat-form");
 		const options = {
 			dicerows: game.settings.get("dice-calculator", "diceRows"),
 		};
@@ -102,6 +109,8 @@ Hooks.on("renderSidebarTab", async (app, html, data) => {
 			$("body > .dice-tray--corner").remove();
 			$content.addClass("dice-tray--corner");
 			$("body").append($content);
+			clearSidebarSpace?.();
+			clearSidebarSpace = reserveSidebarSpace($content[0]);
 			// Let the shared tray logic see both the tray and the chat form
 			html = html.add($content);
 			const $rollMode = $content.find(".dice-tray__roll-mode");

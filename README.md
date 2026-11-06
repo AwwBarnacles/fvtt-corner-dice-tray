@@ -1,16 +1,10 @@
 # Dice Tray
 
-This module adds a dice tray below chat and turns the d20 icon near the chat prompt into a clickable button that opens up a dice calculator, which includes buttons for dice, numbers, and simple math.
+This module adds a dice tray to the bottom-right corner and turns the d20 icon near the chat prompt into a clickable button that opens up a dice calculator, which includes buttons for dice, numbers, and simple math. The sidebar leaves a gap above the tray equal to the gap below it.
 
 ## Installation
 
-1. Go to the setup page and choose **Add-on Modules**.
-2. Click the **Install Module** button:
-3.
-   a) Search for Dice Tray.
-
-	 b) Paste the following on the **Manifest Link**: https://github.com/mclemente/fvtt-dice-tray/releases/latest/download/module.json
-5. In your world, enable the module on the module settings.
+This fork targets Foundry VTT v12. Build it with `npm install` and `npm run build`, then copy the contents of `dist/` into `<Foundry user data>/Data/modules/dice-calculator/`. Restart Foundry and enable Dice Tray in your world.
 
 
 ## Development & Community Contribution
