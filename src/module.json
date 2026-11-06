@@ -12,7 +12,7 @@
 			"discord": "mclemente#5524"
 		}
 	],
-	"url": "https://github.com/AwwBarnacles/fvtt-dice-tray",
+	"url": "https://github.com/AwwBarnacles/fvtt-corner-dice-tray",
 	"version": "4.0.6-corner",
 	"compatibility": {
 		"minimum": "14",
@@ -63,6 +63,6 @@
 			"path": "lang/cs.json"
 		}
 	],
-	"manifest": "https://github.com/AwwBarnacles/fvtt-dice-tray/releases/latest/download/module.json",
-	"download": "https://github.com/AwwBarnacles/fvtt-dice-tray/releases/latest/download/module.zip"
+	"manifest": "https://github.com/AwwBarnacles/fvtt-corner-dice-tray/releases/latest/download/module.json",
+	"download": "https://github.com/AwwBarnacles/fvtt-corner-dice-tray/releases/latest/download/module.zip"
 }
